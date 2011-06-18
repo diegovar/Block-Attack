@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item type="integer" format="integer" name="rowSize">6</item>
+    <dimen name="cameraWidth">480px</dimen>
+    <dimen name="cameraHeight">800px</dimen>
+    <item type="integer" format="integer" name="stepsPerSecond">60</item>
+    
+</resources>
