@@ -1,8 +1,6 @@
 package com.blockattack.board;
 
 import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
 
 import com.blockattack.objects.Block;
 
@@ -12,51 +10,57 @@ import com.blockattack.objects.Block;
  */
 public class BoardState {
 
+	/**
+	 * Board definition
+	 */
+	public int speed; //given in ticks per block
+	public int blocksPerRow;
+	public int maximumRows;
+	
+	/**
+	 * Board state
+	 */
 	public boolean running;
-	
-	public Cursor cursor;
-	
 	public long score;
-	public List<ArrayList<Block>> blocks;
+	public long ticks = 0;
+	public ArrayList<Block> selectedBlocks = new ArrayList<Block>();
+	public ArrayList<Block> fallingBlocks = new ArrayList<Block>();
+	public ArrayList<Block> disappearingBlocks = new ArrayList<Block>();
+	/**
+	 * Board components
+	 */
+	public ArrayList<ArrayList<Block>> blocks;
 	public ArrayList<Block> nextRow;
-	long ticks = 0;
 	
-	public boolean firstBlockTouched = true;
-	public Block firstBlock;
-	
-	public BoardState(List<ArrayList<Block>> initialRows, ArrayList<Block> nextRow, Cursor cursor) {
-		if(initialRows == null) throw new IllegalArgumentException("initialRows is null");
-		if(nextRow == null) throw new IllegalArgumentException("nextRow is null");
-		if(cursor == null) throw new IllegalArgumentException("cursor is null");
-		
+	public BoardState(ArrayList<ArrayList<Block>> initialRows, ArrayList<Block> nextRow, int speed, int blocksPerRow, int maximumRows) {
 		blocks = initialRows;
 		this.nextRow = nextRow;
-		this.cursor = cursor;
-		running = false;		
+		running = false;
+		this.speed = speed;
+		this.blocksPerRow = blocksPerRow;
+		this.maximumRows = maximumRows;
 	}
 	
-	public void setFirstPointCursorSelected(Block b) {
-		firstBlockTouched = true;
-		firstBlock = b;
-		b.setZIndex(1);
-		b.setScale(1.2f);
+	public BoardState clone() {
+		
+		//clone blocks
+		ArrayList<ArrayList<Block>> copyBlocks = new ArrayList<ArrayList<Block>>();
+		for (ArrayList<Block> row : blocks) {
+			ArrayList<Block> copyRow = new ArrayList<Block>();
+			for (Block block : row) {
+				copyRow.add(block != null ? block.clone() : null);
+			}
+			copyBlocks.add(copyRow);
+		}
+		
+		//clone nextRow
+		ArrayList<Block> copyNextRow = new ArrayList<Block>();
+		for (Block block : nextRow) {
+			copyNextRow.add(block.clone());
+		}
+		
+		//selected blocks are not copied as they're not persistent.
+		
+		return new BoardState(copyBlocks, copyNextRow, speed, blocksPerRow, maximumRows);
 	}
-	
-	public void swap(Block b1, Block b2) {
-		blocks.get(b1.currentRow).set(b1.currentCol,b2);
-		blocks.get(b2.currentRow).set(b2.currentCol,b1);
-		//swap physically (sprite positions). No animation for now.
-		float fBX = b1.getX();
-		float fBY = b1.getY();
-		b1.setPosition(b2.getX(),b2.getY());
-		b2.setPosition(fBX, fBY);
-		//swap columns and rows
-		int r = b1.currentRow;
-		int c = b1.currentCol;
-		b1.currentRow = b2.currentRow;
-		b1.currentCol = b2.currentCol;
-		b2.currentCol = c;
-		b2.currentRow = r;
-	}
-	
 }

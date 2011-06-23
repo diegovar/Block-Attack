@@ -1,10 +1,10 @@
 package com.blockattack.objects;
 
 import org.anddev.andengine.entity.sprite.Sprite;
-import org.anddev.andengine.opengl.texture.region.TextureRegion;
+
+import android.R.bool;
 
 import com.blockattack.BlockAttackActivity;
-import com.blockattack.R;
 
 
 public class Block extends Sprite {
@@ -14,14 +14,16 @@ public class Block extends Sprite {
 	public static int width = 64;
 	public static int height = 64;
 	public static int nTypes = 4;
-	public int currentRow;
-	public int currentCol;
+	public CellPosition position;
+	private boolean selected = false;
+	private boolean falling = false;
+	private boolean swappable = true;
+	private boolean disappearing = false;
 	
-	public Block(float pX, float pY, int type, int row, int col) {
+	public Block(float pX, float pY, int type, CellPosition pos) {
 		super(pX, pY, BlockAttackActivity.getInstance().textureRegions.get(blockNumberToTextureRegionId(type)));
 		this.type = type;
-		this.currentRow = row;
-		this.currentCol = col;
+		this.position = pos;
 	}
 	
 	public static int blockNumberToTextureRegionId(int n) {
@@ -41,5 +43,48 @@ public class Block extends Sprite {
 		default:
 			return -1;
 		}
+	}
+	
+	public void setSelected(boolean s) {
+		selected = s;
+		if(s) {
+			this.setScale(1.2f);
+			this.setZIndex(1);
+		} else {
+			this.setScale(1.0f);
+			this.setZIndex(0);
+		}
+	}
+	
+	public boolean isSelected() {
+		return selected;
+	}
+	
+	public void setFalling(boolean f) {
+		this.falling = f;
+	}
+	
+	public boolean isFalling() {
+		return falling;
+	}
+	
+	public Block clone() {
+		return new Block(getX(), getY(), type, position);
+	}
+	
+	public boolean isSwappable() {
+		return swappable;
+	}
+	
+	public void setSwappable(boolean s) {
+		swappable = s;
+	}
+	
+	public boolean isDisappearing() {
+		return disappearing;
+	}
+	
+	public void setDisappearing(boolean d) {
+		disappearing = d;
 	}
 }

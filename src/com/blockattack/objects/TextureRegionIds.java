@@ -7,5 +7,7 @@ public enum TextureRegionIds {
 	block2,
 	block3,
 	block4,
-	block5
+	block5,
+	menu_reset,
+	menu_quit
 }
